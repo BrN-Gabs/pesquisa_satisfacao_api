@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PesquisaController;
 use Illuminate\Support\Facades\Route;
 
 /*

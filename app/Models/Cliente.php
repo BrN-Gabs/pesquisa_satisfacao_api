@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
-    use HasFactory;
     protected $fillable = [
         'nome', 'email', 'senha', 'telefone',
         'cpf', 'cep', 'cidade', 'estado', 'endereco',
-        'bairro', 'numero', 'horario'
+        'bairro', 'numero', 'horario', 'perfils_id'
     ];
+    use HasFactory;
+    
     public $timestamps = false;
 
     public function perfil() {

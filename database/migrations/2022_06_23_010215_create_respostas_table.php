@@ -16,8 +16,7 @@ class CreateRespostasTable extends Migration
         Schema::create('respostas', function (Blueprint $table) {
             $table->id();
             $table->string('resposta');
-            $table->time('horario');
-            $table->unsignedBigInteger('pesquisa_id');
+            $table->unsignedBigInteger('pesquisa_id')->nullable();
             $table->foreign('pesquisa_id')->references('id')->on('pesquisas');
             $table->timestamps();
         });

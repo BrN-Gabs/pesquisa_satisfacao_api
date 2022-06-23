@@ -2,83 +2,55 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Perfil;
 use Illuminate\Http\Request;
 
 class PerfilController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $perfil = Perfil::get();
+
+        return response(
+            json_encode($perfil),
+            200
+        )->header('Content-Type', 'text/plain');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $dados = $request->except('_token');
+
+        Perfil::create($dados);
+
+        return redirect('/perfis');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+        $perfil = Perfil::find($id);
+
+        return response(
+            json_encode($perfil),
+            200
+        );
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+        $cliente = Perfil::find($id);
+        $cliente->update([
+            'descricao' => $request->descricao,
+        ]);
+
+        return redirect('/perfis');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        $cliente = Perfil::find($id);
+        $cliente->delete();
+
+        return redirect('/perfis');
     }
 }

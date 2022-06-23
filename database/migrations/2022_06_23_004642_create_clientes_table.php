@@ -15,21 +15,20 @@ class CreateClientesTable extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('nome')->length(100);
             $table->string('email')->nullable();
             $table->string('senha');
-            $table->integer('telefone')->length(11);
-            $table->integer('cpf')->length(11);
-            $table->integer('cep')->length(8);
+            $table->string('telefone')->length(11);
+            $table->string('cpf')->length(11);
+            $table->string('cep')->length(8);
             $table->string('cidade');
             $table->string('estado');
             $table->string('endereco');
             $table->string('bairro');
             $table->string('numero');
-            $table->time('horario');
-            $table->unsignedBigInteger('perfil_id');
-            $table->foreign('perfil_id')->references('id')->on('perfil');
+            $table->unsignedBigInteger('perfils_id')->nullable();
+            $table->foreign('perfils_id')->references('id')->on('perfils');
+            $table->timestamps();
         });
     }
 

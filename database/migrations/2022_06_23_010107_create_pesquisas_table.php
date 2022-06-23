@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePerfilTable extends Migration
+class CreatePesquisasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class CreatePerfilTable extends Migration
      */
     public function up()
     {
-        Schema::create('perfil', function (Blueprint $table) {
+        Schema::create('pesquisas', function (Blueprint $table) {
             $table->id();
-            $table->string('descricao');
+            $table->string('tema_pesquisa');
+            $table->string('conteudo');
+            $table->boolean('status');
+            $table->unsignedBigInteger('cliente_id')->nullable();
+            $table->foreign('cliente_id')->references('id')->on('clientes');
             $table->timestamps();
         });
     }
@@ -27,6 +31,6 @@ class CreatePerfilTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('perfil');
+        Schema::dropIfExists('pesquisas');
     }
 };

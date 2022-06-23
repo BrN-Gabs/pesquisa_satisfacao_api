@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePesquisasTable extends Migration
+class CreatePerfilsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class CreatePesquisasTable extends Migration
      */
     public function up()
     {
-        Schema::create('pesquisas', function (Blueprint $table) {
+        Schema::create('perfils', function (Blueprint $table) {
             $table->id();
-            $table->string('tema_pesquisa');
-            $table->time('horario');
-            $table->boolean('status');
-            $table->unsignedBigInteger('cliente_id');
-            $table->foreign('cliente_id')->references('id')->on('clientes');
+            $table->string('descricao');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ class CreatePesquisasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pesquisas');
+        Schema::dropIfExists('perfils');
     }
 };
