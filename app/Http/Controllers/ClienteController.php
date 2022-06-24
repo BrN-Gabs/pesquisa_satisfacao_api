@@ -12,60 +12,77 @@ class ClienteController extends Controller
     {
         $clientes = Cliente::get();
 
-        return response(
-            json_encode($clientes),
-            200
-        )->header('Content-Type', 'text/plain');
+        if (!!$clientes) {
+            return $this->successResponseJson(json_encode($clientes));
+        } else {
+            return $this->errorResponse("Error ao Buscar Clientes!");
+        }
     }
 
     public function store(Request $request)
     {   
-        //$cliente = new Cliente();
-
         $dados = $request->except('_token');
-        Cliente::create($dados);
 
-        //$perfil = $cliente->perfil();
+        if (!!$dados) {
+            Cliente::create($dados);
+            return $this->successResponse("Cadastro Realizado com Sucesso!");
+        }
 
-        return redirect('/clientes');
+        return $this->errorResponse("Error ao Cadastrar Clientes!");
+ 
     }
 
     public function show($id)
     {
         $clientes = Cliente::find($id);
 
-        return response(
-            json_encode($clientes),
-            200
-        )->header('Content-Type', 'text/plain');   
+        if (!!$clientes) {
+            return $this->successResponseJson(json_encode($clientes));
+        }
+
+        return $this->errorResponse("Cliente Não Existe!");
+
     }
 
     public function update(Request $request, $id)
     {
         $cliente = Cliente::find($id);
-        $cliente->update([
-            'nome' => $request->nome,
-            'email' => $request->email,
-            'senha' => $request->senha,
-            'telefone' => $request->telefone,
-            'cpf' => $request->cpf,
-            'cep' => $request->cep,
-            'cidade' => $request->cidade,
-            'estado' => $request->estado,
-            'endereco' => $request->endereco,
-            'bairro' => $request->bairro,
-            'numero' => $request->numero,
-            'perfils_id' => $request->perfils_id,
-        ]);
 
-        return redirect('/clients');
+        if (!!$cliente) {
+
+            $cliente->update([
+                'nome' => $request->nome,
+                'email' => $request->email,
+                'senha' => $request->senha,
+                'telefone' => $request->telefone,
+                'cpf' => $request->cpf,
+                'cep' => $request->cep,
+                'cidade' => $request->cidade,
+                'estado' => $request->estado,
+                'endereco' => $request->endereco,
+                'bairro' => $request->bairro,
+                'numero' => $request->numero,
+                'perfils_id' => $request->perfils_id,
+            ]);
+
+            return $this->successResponse("Perfil Alterado com Sucesso!");
+
+        }
+
+        return $this->errorResponse("Error ao Realizar Alteração!");
+        
     }
 
     public function destroy($id)
     {
         $cliente = Cliente::find($id);
-        $cliente->delete();
 
-        return redirect('/clientes');
+        if (!!$cliente) {
+            $cliente->delete();
+            return $this->successResponse("Cliente Deletado com Sucesso!");
+        }
+
+        return $this->errorResponse("Error ao Deletar o Cliente!");
+        
     }
 }

@@ -11,46 +11,68 @@ class PerfilController extends Controller
     {
         $perfil = Perfil::get();
 
-        return response(
-            json_encode($perfil),
-            200
-        )->header('Content-Type', 'text/plain');
+        if (!!$perfil) {
+            return $this->successResponseJson(json_encode($perfil));
+        } 
+            
+        return $this->errorResponse("Error ao Buscar Perfis!");
+        
     }
 
     public function store(Request $request)
     {
         $dados = $request->except('_token');
 
-        Perfil::create($dados);
+        if (!!$dados) {
+            Perfil::create($dados);
 
-        return redirect('/perfis');
+            return $this->successResponse("Cadastro Realizado com Sucesso!");
+        }
+
+        return $this->errorResponse("Error ao Realizar Cadastro!");
+        
     }
 
     public function show($id)
     {
         $perfil = Perfil::find($id);
 
-        return response(
-            json_encode($perfil),
-            200
-        );
+        if (!!$perfil) {
+            return $this->successResponseJson(json_encode($perfil));
+        } 
+            
+        return $this->errorResponse("Perfil Não Existe!");
+        
     }
 
     public function update(Request $request, $id)
     {
         $cliente = Perfil::find($id);
-        $cliente->update([
-            'descricao' => $request->descricao,
-        ]);
 
-        return redirect('/perfis');
+        if (!!$cliente) {
+
+            $cliente->update([
+                'descricao' => $request->descricao,
+            ]);
+
+            return $this->successResponse("Perfil Alterado com Sucesso!");
+
+        }
+
+        return $this->errorResponse("Error ao Realizar Alteração!");
+        
     }
 
     public function destroy($id)
     {
         $cliente = Perfil::find($id);
-        $cliente->delete();
 
-        return redirect('/perfis');
+        if (!!$cliente) {
+            $cliente->delete();
+            return $this->successResponse("Perfil Deletado com Sucesso!");
+        } 
+        
+        return $this->errorResponse("Error ao Deletar o Perfil!");
+        
     }
 }

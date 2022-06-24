@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pesquisa extends Model
 {
-    protected $fillable = ['tema_pesquisa', 'horario', 'status',];
+    protected $fillable = ['tema_pesquisa', 'conteudo', 'status', 'cliente_id'];
     use HasFactory;
 
     public function cliente() {
