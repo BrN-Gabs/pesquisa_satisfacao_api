@@ -11,6 +11,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//Login
+Route::post('/login', [ClienteController::class, 'verificaLogin']);
+
 //Perfil
 Route::get('/perfil', [PerfilController::class, 'index']);
 Route::get('/perfil/{id}', [PerfilController::class, 'show']);
@@ -29,11 +32,10 @@ Route::put('/clientes/{id}', [ClienteController::class, 'update']);
 Route::get('/pesquisas', [PesquisaController::class, 'index']);
 Route::get('/pesquisas/{id}', [PesquisaController::class, 'show']);
 Route::get('/clientes/{clienteId}/pesquisa', [PesquisaController::class, 'pesquisaCliente']);
+Route::get('/pesquisas/tema/{tema}', [PesquisaController::class, 'pesquisaTema']);
 Route::post('/clientes/{clienteId}/pesquisa', [PesquisaController::class, 'store']);
+Route::put('/clientes/{clienteId}/pesquisa/{id}', [PesquisaController::class, 'update']);
 Route::delete('/pesquisas/{id}', [PesquisaController::class, 'destroy']);
 
+//Resposta
 
-//Route::get('/clientes/pesquisa/{tema}', [PesquisaController::class, 'pesquisaTema']);
-//Route::get('/pesquisas/{pesquisa}/respostas', [RespostaController::class, 'index']);
-//Route::post('/pesquisas/{pesquisa}/respostas/assistir', [RespostaController::class, 'assistir']);
-//Route::post('/clientes/{id}/editaNome', [ClienteController::class, 'editaNome']);

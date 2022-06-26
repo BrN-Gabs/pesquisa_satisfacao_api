@@ -81,9 +81,61 @@ class PesquisaController extends Controller
         return $this->errorResponse("Campo clienteID está Vazio!");
     }
 
-    public function update(Request $request, $id)
+    public function pesquisaTema($tema)
     {
-        //
+        if ($tema) {
+            
+            $pesquisa = Pesquisa::select("*")->where('tema_pesquisa', $tema)->get();
+
+            if (json_decode($pesquisa)) {
+
+                return $this->successResponseJson(json_encode($pesquisa));
+
+            }
+
+            return $this->errorResponse("Não foi Encontrado o Tema!");
+        }
+
+        return $this->errorResponse("Tema está Vazio!");
+    }
+
+    public function update(Request $request, $clienteId, $id)
+    {   
+       
+        if ($clienteId) {
+
+            $cliente = Cliente::find($clienteId);
+
+            if (!!$cliente) {
+
+                $pesquisa = Pesquisa::find($id);
+
+                if (!!$pesquisa) {
+
+                    if (strval($pesquisa["cliente_id"]) === $clienteId) {
+
+                        $pesquisa->update([
+                            'tema_pesquisa' => $request->tema_pesquisa,
+                            'conteudo' => $request->conteudo,
+                            'status' => $request->status,
+                        ]);
+
+                        return $this->successResponse("Pesquisa Alterada com Sucesso!");
+
+                    }
+
+                    return $this->errorResponse("Esse Cliente não fez essa Pesquisa!");
+
+                }
+
+                return $this->errorResponse("Pesquisa Não Encontrada!");
+
+            }
+            
+            return $this->errorResponse("Cliente Não Encontrado!");
+        }
+
+        return $this->errorResponse("Error ao Realizar Alteração!");
     }
 
     public function destroy($id)

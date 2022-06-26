@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Perfil;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -23,13 +25,31 @@ class ClienteController extends Controller
     {   
         $dados = $request->except('_token');
 
-        if (!!$dados) {
-            Cliente::create($dados);
-            return $this->successResponse("Cadastro Realizado com Sucesso!");
+        $perfil = Perfil::find($request['perfils_id']);
+
+        if (!!$perfil) {
+
+            $clienteEmail = Cliente::select('*')->where('email', $request['email'])->get();
+
+            if (!json_decode($clienteEmail)) {
+
+                $dados['senha'] = md5($dados['senha']);
+    
+                if (!!$dados) {
+                    Cliente::create($dados);
+                    return $this->successResponse("Cadastro Realizado com Sucesso!");
+                }
+        
+                return $this->errorResponse("Error ao Cadastrar Clientes!");
+    
+            }
+    
+            return $this->errorResponse("E-mail já Cadastrado!");
+
         }
 
-        return $this->errorResponse("Error ao Cadastrar Clientes!");
- 
+        return $this->errorResponse("Perfil Não Cadastrado!");
+
     }
 
     public function show($id)
@@ -85,4 +105,31 @@ class ClienteController extends Controller
         return $this->errorResponse("Error ao Deletar o Cliente!");
         
     }
+
+    public function verificaLogin(Request $request) {
+
+        if ($request['email'] && $request['senha']) {
+
+            $clienteEmail = Cliente::select('*')->where('email', $request['email'])->get();
+
+            if (json_decode($clienteEmail)) {
+
+               $clienteSenha = Cliente::select('*')->where('senha', md5($request['senha']))->get();
+
+                if (json_decode($clienteSenha)) {
+                    return $this->successResponse("E-mail e Senha Válidos!");
+                }
+
+                return $this->errorResponse("Senha Inválida");
+
+            }
+
+            return $this->errorResponse("E-mail Inválido");
+
+        }
+
+        return $this->errorResponse("E-mail ou Senha Vazio!");
+    }
+    
+   
 }

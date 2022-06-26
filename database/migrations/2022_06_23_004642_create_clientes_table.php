@@ -27,7 +27,7 @@ class CreateClientesTable extends Migration
             $table->string('bairro');
             $table->string('numero');
             $table->unsignedBigInteger('perfils_id')->nullable();
-            $table->foreign('perfils_id')->references('id')->on('perfils');
+            $table->foreign('perfils_id')->references('id')->on('perfils')->onDelete('cascade');
             $table->timestamps();
         });
     }
