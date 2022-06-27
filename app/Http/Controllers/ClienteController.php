@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Perfil;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+
+use ReallySimpleJWT\Token;
 
 class ClienteController extends Controller
 {
@@ -16,9 +17,10 @@ class ClienteController extends Controller
 
         if (!!$clientes) {
             return $this->successResponseJson(json_encode($clientes));
-        } else {
-            return $this->errorResponse("Error ao Buscar Clientes!");
-        }
+        } 
+           
+        return $this->errorResponse("Error ao Buscar Clientes!");
+
     }
 
     public function store(Request $request)
@@ -27,7 +29,7 @@ class ClienteController extends Controller
 
         $perfil = Perfil::find($request['perfils_id']);
 
-        if (!!$perfil) {
+        if (json_decode($perfil)) {
 
             $clienteEmail = Cliente::select('*')->where('email', $request['email'])->get();
 
@@ -66,30 +68,29 @@ class ClienteController extends Controller
 
     public function update(Request $request, $id)
     {
-        $cliente = Cliente::find($id);
+        $dados = $request->except('_token');
 
-        if (!!$cliente) {
+        $perfil = Perfil::find($dados['perfils_id']);
 
-            $cliente->update([
-                'nome' => $request->nome,
-                'email' => $request->email,
-                'senha' => $request->senha,
-                'telefone' => $request->telefone,
-                'cpf' => $request->cpf,
-                'cep' => $request->cep,
-                'cidade' => $request->cidade,
-                'estado' => $request->estado,
-                'endereco' => $request->endereco,
-                'bairro' => $request->bairro,
-                'numero' => $request->numero,
-                'perfils_id' => $request->perfils_id,
-            ]);
+        if (json_decode($perfil)) {
 
-            return $this->successResponse("Perfil Alterado com Sucesso!");
+            $dados['senha'] = md5($dados['senha']);
+
+            $cliente = Cliente::find($id);
+
+            if (!!$cliente) {
+
+                $cliente->update($dados);
+        
+                return $this->successResponse("Cliente Alterado com Sucesso!");
+
+            }
+
+            return $this->errorResponse("Cliente Não Encontrado!");
 
         }
 
-        return $this->errorResponse("Error ao Realizar Alteração!");
+        return $this->errorResponse("Perfil Não Cadastrado!");
         
     }
 
@@ -117,7 +118,9 @@ class ClienteController extends Controller
                $clienteSenha = Cliente::select('*')->where('senha', md5($request['senha']))->get();
 
                 if (json_decode($clienteSenha)) {
-                    return $this->successResponse("E-mail e Senha Válidos!");
+
+                    return $this->createToken($clienteSenha[0]);
+
                 }
 
                 return $this->errorResponse("Senha Inválida");
@@ -129,6 +132,23 @@ class ClienteController extends Controller
         }
 
         return $this->errorResponse("E-mail ou Senha Vazio!");
+    }
+
+    private function createToken($dadosCliente)
+    {
+        
+        $payload = [
+            'iat' => time(),
+            'uid' => 1,
+            'exp' => time() + 10,
+            'iss' => 'localhost',
+            'client' => $dadosCliente
+        ];
+
+        $secret = 'ChaveSuperSecreta&123';
+        $token = Token::customPayload($payload, $secret);
+
+        return $token;
     }
     
    
