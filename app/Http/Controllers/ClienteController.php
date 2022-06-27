@@ -134,7 +134,7 @@ class ClienteController extends Controller
         $payload = [
             'iat' => time(),
             'uid' => 1,
-            'exp' => time() + 1000,
+            'exp' => time() + 100000,
             'iss' => 'localhost',
             'client' => $dadosCliente
         ];
