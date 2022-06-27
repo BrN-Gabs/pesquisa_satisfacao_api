@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use App\Models\Perfil;
-use GuzzleHttp\Client;
+use ReallySimpleJWT\Token;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
- 
+
+    
     public function index()
     {
         $clientes = Cliente::get();
@@ -22,7 +23,7 @@ class ClienteController extends Controller
     }
 
     public function store(Request $request)
-    {   
+    {
         $dados = $request->except('_token');
 
         $perfil = Perfil::find($request['perfils_id']);
@@ -34,22 +35,19 @@ class ClienteController extends Controller
             if (!json_decode($clienteEmail)) {
 
                 $dados['senha'] = md5($dados['senha']);
-    
+
                 if (!!$dados) {
                     Cliente::create($dados);
                     return $this->successResponse("Cadastro Realizado com Sucesso!");
                 }
-        
-                return $this->errorResponse("Error ao Cadastrar Clientes!");
-    
-            }
-    
-            return $this->errorResponse("E-mail já Cadastrado!");
 
+                return $this->errorResponse("Error ao Cadastrar Clientes!");
+            }
+
+            return $this->errorResponse("E-mail já Cadastrado!");
         }
 
         return $this->errorResponse("Perfil Não Cadastrado!");
-
     }
 
     public function show($id)
@@ -61,7 +59,6 @@ class ClienteController extends Controller
         }
 
         return $this->errorResponse("Cliente Não Existe!");
-
     }
 
     public function update(Request $request, $id)
@@ -86,11 +83,9 @@ class ClienteController extends Controller
             ]);
 
             return $this->successResponse("Perfil Alterado com Sucesso!");
-
         }
 
         return $this->errorResponse("Error ao Realizar Alteração!");
-        
     }
 
     public function destroy($id)
@@ -103,10 +98,10 @@ class ClienteController extends Controller
         }
 
         return $this->errorResponse("Error ao Deletar o Cliente!");
-        
     }
 
-    public function verificaLogin(Request $request) {
+    public function verificaLogin(Request $request)
+    {
 
         if ($request['email'] && $request['senha']) {
 
@@ -114,22 +109,39 @@ class ClienteController extends Controller
 
             if (json_decode($clienteEmail)) {
 
-               $clienteSenha = Cliente::select('*')->where('senha', md5($request['senha']))->get();
+                $clienteSenha = Cliente::select('*')->where('email', $request['email'])->where('senha', md5($request['senha']))->get();
 
                 if (json_decode($clienteSenha)) {
-                    return $this->successResponse("E-mail e Senha Válidos!");
+
+                    return $this->createToken($clienteSenha[0]);
                 }
 
                 return $this->errorResponse("Senha Inválida");
-
             }
 
             return $this->errorResponse("E-mail Inválido");
-
         }
 
         return $this->errorResponse("E-mail ou Senha Vazio!");
     }
-    
-   
+
+
+
+    private function createToken($dadosCliente)
+    {
+
+
+        $payload = [
+            'iat' => time(),
+            'uid' => 1,
+            'exp' => time() + 10,
+            'iss' => 'localhost',
+            'client' => $dadosCliente
+        ];
+
+        $secret = 'ChaveSuperSecreta&123';
+        $token = Token::customPayload($payload, $secret);
+
+        return $token;
+    }
 }
