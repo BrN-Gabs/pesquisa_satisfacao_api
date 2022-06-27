@@ -31,11 +31,17 @@ Route::put('/clientes/{id}', [ClienteController::class, 'update']);
 //Pesquisa
 Route::get('/pesquisas', [PesquisaController::class, 'index']);
 Route::get('/pesquisas/{id}', [PesquisaController::class, 'show']);
-Route::get('/clientes/{clienteId}/pesquisa', [PesquisaController::class, 'pesquisaCliente']);
+Route::get('/clientes/{clienteId}/pesquisas', [PesquisaController::class, 'pesquisaCliente']);
 Route::get('/pesquisas/tema/{tema}', [PesquisaController::class, 'pesquisaTema']);
-Route::post('/clientes/{clienteId}/pesquisa', [PesquisaController::class, 'store']);
-Route::put('/clientes/{clienteId}/pesquisa/{id}', [PesquisaController::class, 'update']);
+Route::post('/clientes/{clienteId}/pesquisas', [PesquisaController::class, 'store']);
+Route::put('/clientes/{clienteId}/pesquisas/{id}', [PesquisaController::class, 'update']);
 Route::delete('/pesquisas/{id}', [PesquisaController::class, 'destroy']);
 
 //Resposta
-
+Route::get('/respostas', [RespostaController::class, 'index']);
+Route::get('/respostas/{id}', [RespostaController::class, 'show']);
+Route::get('/clientes/{clienteId}/respostas', [RespostaController::class, 'respostaCliente']);
+Route::get('/pesquisas/{pesquisaId}/respostas', [RespostaController::class, 'respostaPesquisa']);
+Route::post('/clientes/pesquisas/{pesquisaId}/respostas', [RespostaController::class, 'store']);
+Route::put('/clientes/pesquisas/{pesquisaId}/respostas/{id}', [RespostaController::class, 'update']);
+Route::delete('/respostas/{id}', [RespostaController::class, 'destroy']);

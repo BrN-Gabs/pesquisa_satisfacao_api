@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Resposta extends Model
 {
-    protected $fillable = ['resposta', 'horario'];
+    protected $fillable = ['resposta', 'pesquisa_id'];
     use HasFactory;
 
     public function pesquisa() {
