@@ -21,7 +21,7 @@ class RespostaController extends Controller
         
     }
 
-    public function store(Request $request, $pesquisaId, $clientesId)
+    public function store(Request $request, $pesquisaId)
     {
         
         if ($pesquisaId) {
@@ -136,7 +136,7 @@ class RespostaController extends Controller
 
         }
 
-        return $this->errorResponse("Esse Cliente não tem Resposta Cadastrada!");
+        return $this->errorResponse("Esse Cliente não tem Pesquisa Cadastrada!");
 
     }
 
