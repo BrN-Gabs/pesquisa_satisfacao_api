@@ -23,36 +23,46 @@ class CheckValidationTokenMiddleware
     {
         $token = $request->header('Authorization');
 
-        $tokenBearer = explode("Bearer ", $token);  
+        if ($token) {
 
-        $tokenParts = explode(".", $tokenBearer[1]);
+            $tokenBearer = explode("Bearer ", $token);  
 
-        $tokenHeader = base64_decode($tokenParts[0]);
-        $tokenPayload = base64_decode($tokenParts[1]);
-        $jwtHeader = json_decode($tokenHeader);
-        $jwtPayload = json_decode($tokenPayload);  
+            $tokenParts = explode(".", $tokenBearer[1]);
 
-        $validateExpiration = Token::validateExpiration($tokenBearer[1]);
+            $tokenHeader = base64_decode($tokenParts[0]);
+            $tokenPayload = base64_decode($tokenParts[1]);
+            $jwtHeader = json_decode($tokenHeader);
+            $jwtPayload = json_decode($tokenPayload);  
 
-        if ($validateExpiration == false) {
-            return response(
-                "Token Expirado!",
-                400
-            )->header('Content-Type', 'text/plain');
+            $validateExpiration = Token::validateExpiration($tokenBearer[1]);
+
+            if ($validateExpiration == false) {
+                return response(
+                    "Token Expirado!",
+                    400
+                )->header('Content-Type', 'text/plain');
+            }
+            
+            $email = $jwtPayload->client->email;
+            $senha = $jwtPayload->client->senha;
+
+            $cliente = Cliente::select("*")->where("email", $email)->where("senha", $senha)->get();
+
+            if (!$cliente) {
+                return response(
+                    "Token não Autenticado!",
+                    400
+                )->header('Content-Type', 'text/plain');
+            }
+
+            return $next($request);
+
         }
+
+        return response(
+            "Token Vazio!",
+            400
+        )->header('Content-Type', 'text/plain');
         
-        $email = $jwtPayload->client->email;
-        $senha = $jwtPayload->client->senha;
-
-        $cliente = Cliente::select("*")->where("email", $email)->where("senha", $senha)->get();
-
-        if (!$cliente) {
-            return response(
-                "Token não Autenticado!",
-                400
-            )->header('Content-Type', 'text/plain');
-        }
-
-        return $next($request);
     }
 }
