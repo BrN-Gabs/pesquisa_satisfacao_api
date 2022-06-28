@@ -41,6 +41,7 @@ Route::delete('/pesquisas/{id}', [PesquisaController::class, 'destroy'])->middle
 Route::get('/respostas', [RespostaController::class, 'index'])->middleware('check.token');
 Route::get('/respostas/{id}', [RespostaController::class, 'show'])->middleware('check.token');
 Route::get('/clientes/{clienteId}/respostas', [RespostaController::class, 'respostaCliente'])->middleware('check.token');
+Route::get('/clientes/nome/{nome}/respostas', [RespostaController::class, 'respostaClienteNome'])->middleware('check.token');
 Route::get('/pesquisas/{pesquisaId}/respostas', [RespostaController::class, 'respostaPesquisa'])->middleware('check.token');
 Route::post('/clientes/pesquisas/{pesquisaId}/respostas', [RespostaController::class, 'store'])->middleware('check.token');
 Route::put('/clientes/pesquisas/{pesquisaId}/respostas/{id}', [RespostaController::class, 'update'])->middleware('check.token');

@@ -12,7 +12,9 @@ class PesquisaController extends Controller
     public function index()
     {
 
-        $pesquisas = Pesquisa::get();
+        $pesquisas = Pesquisa::select("pesquisas.*", "clientes.nome", "clientes.cpf", "clientes.email")
+                    ->leftJoin('clientes', 'clientes.id', '=', 'pesquisas.cliente_id')
+                    ->get();
 
         if (!!$pesquisas) {
             return $this->successResponseJson(json_encode($pesquisas));
@@ -77,7 +79,7 @@ class PesquisaController extends Controller
                 } else {
 
                     return $this->errorResponse("Erro ao Buscar a Pesquisa por Cliente!");
-                    
+
                 }
 
             }

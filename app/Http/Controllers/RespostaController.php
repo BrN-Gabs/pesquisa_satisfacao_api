@@ -126,6 +126,22 @@ class RespostaController extends Controller
 
     }
 
+    public function respostaClienteNome($nome) {
+
+        $resposta = Resposta::select("*")->where("nome", $nome)->get();
+
+        if (json_decode($resposta)) {
+
+            return $this->successResponseJson(json_encode($resposta));
+
+        }
+
+        return $this->errorResponse("Esse Cliente não tem Resposta Cadastrada!");
+
+    }
+
+    
+
     public function respostaPesquisa($pesquisaId) {
 
         Pesquisa::find($pesquisaId);
