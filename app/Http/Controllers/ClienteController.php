@@ -126,9 +126,16 @@ class ClienteController extends Controller
 
                 $clienteSenha = Cliente::select('*')->where('email', $request['email'])->where('senha', md5($request['senha']))->get();
 
+                $nome = Cliente::select('nome')->where('email', $request['email'])->get();
+
                 if (json_decode($clienteSenha)) {
 
-                    return $this->createToken($clienteSenha[0]);
+                    $array = [
+                        'token' => $this->createToken($clienteSenha[0]),
+                        'nome' => $nome[0]['nome']
+                    ];
+
+                    return $this->successResponseJson(json_encode($array));
                 }
 
                 return $this->errorResponse("Senha Inválida");

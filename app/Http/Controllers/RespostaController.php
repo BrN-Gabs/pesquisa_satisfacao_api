@@ -21,7 +21,7 @@ class RespostaController extends Controller
         
     }
 
-    public function store(Request $request, $pesquisaId)
+    public function store(Request $request, $pesquisaId, $clientesId)
     {
         
         if ($pesquisaId) {

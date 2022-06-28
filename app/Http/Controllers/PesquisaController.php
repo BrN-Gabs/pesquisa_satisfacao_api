@@ -65,12 +65,19 @@ class PesquisaController extends Controller
 
             if (!!$cliente) {
 
-                $pesquisaCliente = Pesquisa::select("*")->where('cliente_id', $clienteId)->get();
+                $pesquisaCliente = Pesquisa::select("pesquisas.*", "clientes.nome", "clientes.cpf", "clientes.email")
+                    ->leftJoin('clientes', 'clientes.id', '=', 'pesquisas.cliente_id')
+                    ->where('clientes.id', $clienteId)
+                    ->get();
 
                 if ($pesquisaCliente) {
+
                     return $this->successResponseJson(json_encode($pesquisaCliente));
+
                 } else {
+
                     return $this->errorResponse("Erro ao Buscar a Pesquisa por Cliente!");
+                    
                 }
 
             }
