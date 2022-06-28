@@ -74,12 +74,24 @@ class ClienteController extends Controller
 
         if (json_decode($perfil)) {
 
-            $dados['senha'] = md5($dados['senha']);
-
             $cliente = Cliente::find($id);
 
             if (!!$cliente) {
 
+                if (!$request['senha']) {
+
+                    $senha = Cliente::select('senha')->where('id', $id)->get();
+                    
+                    array_push($dados, $senha);
+
+                    $cliente->update($dados);
+                    
+                    return $this->successResponse("Cliente Alterado com Sucesso!");
+
+                }
+    
+                $dados['senha'] = md5($dados['senha']);
+    
                 $cliente->update($dados);
         
                 return $this->successResponse("Cliente Alterado com Sucesso!");

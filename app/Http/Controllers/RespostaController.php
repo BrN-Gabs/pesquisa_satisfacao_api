@@ -72,6 +72,7 @@ class RespostaController extends Controller
 
                         $resposta->update([
                             'resposta' => $request->resposta,
+                            'nome' => $request->nome
                         ]);
 
                         return $this->successResponse("Resposta Alterada com Sucesso!");
