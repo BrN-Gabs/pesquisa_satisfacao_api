@@ -17,7 +17,7 @@ class CreateRespostasTable extends Migration
             $table->id();
             $table->string('resposta');
             $table->unsignedBigInteger('pesquisa_id')->nullable();
-            $table->foreign('pesquisa_id')->references('id')->on('pesquisas');
+            $table->foreign('pesquisa_id')->references('id')->on('pesquisas')->onDelete('cascade');
             $table->timestamps();
         });
     }
