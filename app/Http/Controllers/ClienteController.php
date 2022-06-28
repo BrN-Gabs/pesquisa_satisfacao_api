@@ -10,21 +10,22 @@ use ReallySimpleJWT\Token;
 
 class ClienteController extends Controller
 {
- 
+
+
     public function index()
     {
         $clientes = Cliente::get();
 
         if (!!$clientes) {
             return $this->successResponseJson(json_encode($clientes));
-        } 
-           
+        }
+
         return $this->errorResponse("Error ao Buscar Clientes!");
 
     }
 
     public function store(Request $request)
-    {   
+    {
         $dados = $request->except('_token');
 
         $perfil = Perfil::find($request['perfils_id']);
@@ -36,22 +37,19 @@ class ClienteController extends Controller
             if (!json_decode($clienteEmail)) {
 
                 $dados['senha'] = md5($dados['senha']);
-    
+
                 if (!!$dados) {
                     Cliente::create($dados);
                     return $this->successResponse("Cadastro Realizado com Sucesso!");
                 }
-        
-                return $this->errorResponse("Error ao Cadastrar Clientes!");
-    
-            }
-    
-            return $this->errorResponse("E-mail já Cadastrado!");
 
+                return $this->errorResponse("Error ao Cadastrar Clientes!");
+            }
+
+            return $this->errorResponse("E-mail já Cadastrado!");
         }
 
         return $this->errorResponse("Perfil Não Cadastrado!");
-
     }
 
     public function show($id)
@@ -63,7 +61,6 @@ class ClienteController extends Controller
         }
 
         return $this->errorResponse("Cliente Não Existe!");
-
     }
 
     public function update(Request $request, $id)
@@ -93,7 +90,7 @@ class ClienteController extends Controller
                 $dados['senha'] = md5($dados['senha']);
     
                 $cliente->update($dados);
-        
+
                 return $this->successResponse("Cliente Alterado com Sucesso!");
 
             }
@@ -103,7 +100,7 @@ class ClienteController extends Controller
         }
 
         return $this->errorResponse("Perfil Não Cadastrado!");
-        
+
     }
 
     public function destroy($id)
@@ -116,10 +113,10 @@ class ClienteController extends Controller
         }
 
         return $this->errorResponse("Error ao Deletar o Cliente!");
-        
     }
 
-    public function verificaLogin(Request $request) {
+    public function verificaLogin(Request $request)
+    {
 
         if ($request['email'] && $request['senha']) {
 
@@ -127,20 +124,17 @@ class ClienteController extends Controller
 
             if (json_decode($clienteEmail)) {
 
-               $clienteSenha = Cliente::select('*')->where('senha', md5($request['senha']))->get();
+                $clienteSenha = Cliente::select('*')->where('email', $request['email'])->where('senha', md5($request['senha']))->get();
 
                 if (json_decode($clienteSenha)) {
 
                     return $this->createToken($clienteSenha[0]);
-
                 }
 
                 return $this->errorResponse("Senha Inválida");
-
             }
 
             return $this->errorResponse("E-mail Inválido");
-
         }
 
         return $this->errorResponse("E-mail ou Senha Vazio!");
@@ -148,11 +142,11 @@ class ClienteController extends Controller
 
     private function createToken($dadosCliente)
     {
-        
+
         $payload = [
             'iat' => time(),
             'uid' => 1,
-            'exp' => time() + 10,
+            'exp' => time() + 100000,
             'iss' => 'localhost',
             'client' => $dadosCliente
         ];
@@ -162,6 +156,6 @@ class ClienteController extends Controller
 
         return $token;
     }
-    
-   
+
+
 }
