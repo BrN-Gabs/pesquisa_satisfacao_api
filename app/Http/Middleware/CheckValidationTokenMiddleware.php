@@ -32,14 +32,21 @@ class CheckValidationTokenMiddleware
         $jwtHeader = json_decode($tokenHeader);
         $jwtPayload = json_decode($tokenPayload);  
 
-        Token::validateExpiration($tokenPayload);
+        $validateExpiration = Token::validateExpiration($tokenBearer[1]);
+
+        if ($validateExpiration == false) {
+            return response(
+                "Token Expirado!",
+                400
+            )->header('Content-Type', 'text/plain');
+        }
         
         $email = $jwtPayload->client->email;
         $senha = $jwtPayload->client->senha;
 
         $cliente = Cliente::select("*")->where("email", $email)->where("senha", $senha)->get();
 
-        if (!json_decode($cliente)) {
+        if (!$cliente) {
             return response(
                 "Token não Autenticado!",
                 400
